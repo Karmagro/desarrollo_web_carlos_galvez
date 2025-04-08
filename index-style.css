@@ -1,0 +1,37 @@
+.navbar {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 60px 0;
+}
+
+.navbar button {
+	font-size: 20px;
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+table, th, td {
+  border: 2px solid black;
+  border-collapse: collapse;
+  text-align: center;
+  margin: 0 auto;
+}
+
+th {
+	font-size: 35px;
+	background-color: black;
+	color: white;
+}
+
+td {
+	font-size: 18px;
+}
+
+.img-eventos {
+	width: 400px;
+	height: auto;
+}

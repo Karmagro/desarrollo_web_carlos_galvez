@@ -1,0 +1,62 @@
+/* Estilo del formulario de actividad */
+form {
+    width: 60%;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+fieldset {
+    margin-bottom: 15px;
+    border: 2px solid #ccc;
+}
+
+legend {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input, select, button {
+    margin: 5px 0;
+    padding: 8px;
+    width: calc(100% - 20px);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+	flex-direction: column;
+}
+
+.checkbox-group label {
+    margin-right: 5px;
+}
+
+.checkbox-group input[type="text"] {
+    margin-left: 10px;
+    flex-grow: 1;
+}
+
+button {
+  background-color: black;
+  color: white;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+}
+
+button:hover {
+  background-color: #333;
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+
