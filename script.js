@@ -78,6 +78,11 @@ temaSelect.addEventListener("change", function() {
     }
 });
 
+function validarTelefono(telefono) {
+    const telefonoRegex = /^\+\d{3}\.\d{8}$/; // Matches +NNN.NNNNNNNN
+    return telefonoRegex.test(telefono);
+}
+
 // Validación del formulario completo
 function validarFormulario() {
     const email = document.getElementById("email").value;
@@ -85,6 +90,13 @@ function validarFormulario() {
         alert("Formato de email no válido.");
         return false;
     }
+
+    const telefono = document.getElementById("telefono").value;
+    if (telefono && !validarTelefono(telefono)) {
+        alert("El número de teléfono debe seguir el formato +NNN.NNNNNNNN, por ejemplo: +569.12345678.");
+        return false;
+    }
+    
     const fotos = document.querySelectorAll("input[type='file']");
     if (fotos.length < 1) {
         alert("Debe subir al menos una foto.");

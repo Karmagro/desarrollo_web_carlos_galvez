@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Actividades</title>
+    <link rel="stylesheet" href="listado.css">
+</head>
+<body>
+    <header>
+        <h1>Listado de Actividades</h1>
+        <p>Haz clic en una fila para ver los detalles completos de la actividad.</p>
+    </header>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Inicio</th>
+                <th>Término</th>
+                <th>Comuna</th>
+                <th>Sector</th>
+                <th>Tema</th>
+                <th>Nombre Organizador</th>
+                <th>Total Fotos</th>
+            </tr>
+        </thead>
+        <tbody id="tabla-actividades"></tbody>
+    </table>
+
+    <div class="volver">
+        <button onclick="location.href='index.html'">Volver a la Portada</button>
+    </div>
+
+    <script>
+        const actividades = [
+            {
+                inicio: '2025-04-01 08:00',
+                termino: '2025-04-01 18:00',
+                comuna: 'Santiago',
+                sector: 'Republica',
+                tema: 'Feria tecnologica',
+                organizador: 'Carlos Pérez',
+                fotos: ['img/eventos/feria_tecnologica.jpg']
+            },
+            {
+                inicio: '2025-03-28 12:00',
+                termino: '2025-03-28 14:00',
+                comuna: 'Santiago',
+                sector: 'Beauchef 850, terraza',
+                tema: 'Escuela de Boxeo',
+                organizador: 'Luisa Fernández',
+                fotos: ['img/eventos/boxeo.jpg']
+            },
+            {
+                inicio: '2025-03-29 19:00',
+                termino: '2025-03-29 20:00',
+                comuna: 'Ñuñoa',
+                sector: 'Plaza',
+                tema: 'Tocata',
+                organizador: 'Mauricio Díaz',
+                fotos: ['img/eventos/tocata.jpg']
+            },
+            {
+                inicio: '2022-03-30 18:00',
+                termino: '-',
+                comuna: 'Santiago',
+                sector: "Parque O'higgins",
+                tema: 'Maratón',
+                organizador: 'Cecilia Mora',
+                fotos: ['img/eventos/maraton.jpg']
+            },
+            {
+                inicio: '2025-07-05 08:00',
+                termino: '2025-07-10 18:00',
+                comuna: 'Viña del Mar',
+                sector: 'Reloj de Flores',
+                tema: 'Exposición de Arte',
+                organizador: 'Felipe Ríos',
+                fotos: ['img/eventos/exposicion_arte.jpg']
+            }
+        ];
+
+        const tabla = document.getElementById('tabla-actividades');
+        actividades.forEach((act, index) => {
+            const fila = document.createElement('tr');
+            fila.innerHTML = `
+                <td>${act.inicio}</td>
+                <td>${act.termino}</td>
+                <td>${act.comuna}</td>
+                <td>${act.sector}</td>
+                <td>${act.tema}</td>
+                <td>${act.organizador}</td>
+                <td>${act.fotos.length}</td>
+            `;
+            fila.style.cursor = 'pointer';
+            fila.onclick = () => {
+                localStorage.setItem('actividadSeleccionada', JSON.stringify(act));
+                location.href = 'informacion_actividad.html';
+            };
+            tabla.appendChild(fila);
+        });
+    </script>
+</body>
+</html>

@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="agregar-style.css">
+    <title>Agregar Actividad</title>
 </head>
 <body>
-    <h1 style="text-align:center;">Agregar Nueva Actividad</h1>
+    <header>
+        <h1>Agregar Actividad</h1>
+        <p>Por favor, complete el siguiente formulario para agregar una nueva actividad.</p>
+    </header>
     <form id="form-actividad">
         <fieldset>
             <legend>¿Dónde?</legend>
@@ -33,7 +39,7 @@
             <label for="telefono">Número de celular:</label>
             <input type="tel" id="telefono"><br>
 
-            <label for="contactos" style="display:block;">Contactar por:</label>
+            <label style="display:block;">Contactar por:</label>
             <div class="checkbox-group">
                 <label for="whatsapp">Whatsapp</label>
                 <input id="whatsapp" type="checkbox" name="contacto" onclick="revisaCheck(this);">
@@ -79,7 +85,7 @@
             </select>
             <input type="text" id="tema-otro" placeholder="Especifique el tema" style="display: none;"><br>
 
-            <label for="foto">Fotos:</label>
+            <label>Fotos:</label>
             <div id="foto-container">
                 <input type="file" id="foto1" accept="image/*"><br>
             </div>

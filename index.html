@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="stylesheet" href="index-style.css">
+		<title>Portal</title>
 	</head>
 	<body>
 		<nav class="navbar">
@@ -9,56 +12,62 @@
 			<button type="button" onclick="location.href='listado.html'">Ver Listado de Actividades</button>
 			<button type="button" onclick="location.href='estadisticas.html'">Estadísticas</button>
 		</nav>
+
+		<div class="header">
+			<h1>Eventos</h1>
+			<p>Bienvenido al portal de eventos. Aquí podrás ver los eventos programados.</p>
+		</div>
 		
-		<table>
-		  <tr>
-			<th>Inicio</th>
-			<th>Término</th>
-			<th>Comuna</th>
-			<th>Sector</th>
-			<th>Tema</th>
-			<th>Foto</th>
-		  </tr>
-		  <tr>
-			<td>2025-04-01 8:00</td>
-			<td>2025-04-01 18:00</td>
-			<td>Santiago</td>
-			<td>Republica</td>
-			<td>Feria tecnologica</td>
-			<td><img class="img-eventos" src="img\eventos\feria_tecnologica.jpg" ><td>
-		  </tr>
-		  <tr>
-			<td>2025-03-28 12:00</td>
-			<td>2025-03-28 14:00</td>
-			<td>Santiago</td>
-			<td>Beauchef 850, terraza</td>
-			<td>Escuela de Boxeo</td>
-			<td><img class="img-eventos" src="img\eventos\boxeo.jpg" ><td>
-		  </tr>
-		  <tr>
-			<td>2025-03-29 19:00</td>
-			<td>2025-03-29 20:00</td>
-			<td>Ñuñoa</td>
-			<td>Plaza</td>
-			<td>Tocata</td>
-			<td><img class="img-eventos" src="img\eventos\tocata.jpg"><td>
-		  </tr>	
-		  <tr>
-			<td>2022-03-30 18:00</td>
-			<td>-	</td>
-			<td>Santiago</td>
-			<td>Parque O'higgins</td>
-			<td>Maraton</td>
-			<td><img class="img-eventos" src="img\eventos\maraton.jpg"><td>
-		  </tr>
-		  <tr>
-			<td>2025-07-05 8:00</td>
-			<td>22025-07-10 18:00</td>
-			<td>Viña del Mar</td>
-			<td>Reloj de Flores</td>
-			<td>Exposición de Arte</td>
-			<td><img class="img-eventos" src="img\eventos\exposicion_arte.jpg"><td>
-		  </tr>
-		</table>
+		<div class="container">
+			<div class="event-row">
+				<div class="event-item event-label">Inicio</div>
+				<div class="event-item event-label">Término</div>
+				<div class="event-item event-label">Comuna</div>
+				<div class="event-item event-label">Sector</div>
+				<div class="event-item event-label">Tema</div>
+				<div class="event-item event-label">Foto</div>
+			</div>
+ 
+			<div class="event-row event-row-1">
+				<div class="event-item">2025-04-01 8:00</div>
+				<div class="event-item">2025-04-01 18:00</div>
+				<div class="event-item">Santiago</div>
+				<div class="event-item">Republica</div>
+				<div class="event-item">Feria tecnologica</div>
+				<div class="event-item"><img class="img-eventos" alt="Feria tecnologica" src="img/eventos/feria_tecnologica.jpg" >	</div>
+			</div>
+			<div class="event-row event-row-2">
+				<div class="event-item">2025-03-28 12:00</div>
+				<div class="event-item">2025-03-28 14:00</div>
+				<div class="event-item">Santiago</div>
+				<div class="event-item">Beauchef 850, terraza</div>
+				<div class="event-item">Escuela de Boxeo</div>
+				<div class="event-item"><img class="img-eventos" alt="Clase boxeo" src="img/eventos/boxeo.jpg" >	</div>
+			</div>
+			<div class="event-row event-row-3">
+				<div class="event-item">2025-03-29 19:00</div>
+				<div class="event-item">2025-03-29 20:00</div>
+				<div class="event-item">Ñuñoa</div>
+				<div class="event-item">Plaza</div>
+				<div class="event-item">Tocata</div>
+				<div class="event-item"><img class="img-eventos" alt="Tocata" src="img/eventos/tocata.jpg" >	</div>
+			</div>
+			<div class="event-row event-row-4">
+				<div class="event-item">2022-03-30 18:00</div>
+				<div class="event-item">-</div>
+				<div class="event-item">Santiago</div>
+				<div class="event-item">Parque O'higgins</div>
+				<div class="event-item">Maraton</div>
+				<div class="event-item"><img class="img-eventos" alt="Maraton" src="img/eventos/maraton.jpg" >	</div>
+			</div>
+			<div class="event-row event-row-5">
+				<div class="event-item">2025-07-05 8:00</div>
+				<div class="event-item">2025-07-10 18:00</div>
+				<div class="event-item">Viña del Mar</div>
+				<div class="event-item">Reloj de Flores</div>
+				<div class="event-item">Exposición de Arte</div>
+				<div class="event-item"><img class="img-eventos" alt="Exposición de Arte" src="img/eventos/exposicion_arte.jpg" >	</div>
+			</div>
+		</div>
 	</body>
 </html>
