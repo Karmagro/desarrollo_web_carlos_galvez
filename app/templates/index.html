@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='css/styles.css')}}"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
+    <title>HomePage</title>
+  </head>
+  <body>
+    <header>{% include "_nav.html" %}</header>
+    <main>
+      <section class="main-section" id="welcome-section">
+        <h1>Bienvenido a la plataforma de actividades!</h1>
+        <p>Descubre, comparte y organiza actividades recreativas en tu zona.</p>
+      </section>
+      <section class="main-section" id="newest-activities">
+        <h2 style="padding-bottom: 1rem">Ultimas actividades agregadas</h2>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Inicio</th>
+              <th scope="col">Término</th>
+              <th scope="col">Comuna</th>
+              <th scope="col">Sector</th>
+              <th scope="col">Tema</th>
+              <th scope="col">Foto</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>s</td>
+              <td>s</td>
+              <td>s</td>
+              <td>s</td>
+              <td>ss</td>
+              <td>
+                <img
+                  src="{{ url_for('static', filename='img/rock.jpg') }}"
+                  alt="Es una roca"
+                  class="activity-image"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>s</td>
+              <td>s</td>
+              <td>s</td>
+              <td>s</td>
+              <td>ss</td>
+              <td>s</td>
+            </tr>
+            <tr>
+              <td>s</td>
+              <td>s</td>
+              <td>s</td>
+              <td>s</td>
+              <td>ss</td>
+              <td>s</td>
+            </tr>
+            <tr>
+              <td>s</td>
+              <td>s</td>
+              <td>s</td>
+              <td>s</td>
+              <td>ss</td>
+              <td>s</td>
+            </tr>
+            <tr>
+              <td>s</td>
+              <td>s</td>
+              <td>s</td>
+              <td>s</td>
+              <td>ss</td>
+              <td>s</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>
