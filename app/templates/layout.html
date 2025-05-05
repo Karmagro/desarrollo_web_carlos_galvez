@@ -11,9 +11,11 @@
       href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
       rel="stylesheet"
     />
-    <title>{%block title}Titulo{% endblock %}</title>
+    <title>{% block title %}Titulo{% endblock %}</title>
   </head>
   <body>
-    {% block content %}{% endblock %}
+    {% include "_header.html" %} {% block content %}
+    <h1>hello world</h1>
+    {% endblock %}
   </body>
 </html>

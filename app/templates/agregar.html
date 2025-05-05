@@ -1,17 +1,360 @@
-<!DOCTYPE html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      rel="stylesheet"
-      href="{{url_for('static', filename='css/styles.css')}}"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
-      rel="stylesheet"
-    />
-    <title>Agregar actividad</title>
-  </head>
-  <body></body>
-</html>
+{% extends "layout.html" %} {% block title %} Agregar actividad {% endblock %}
+{% block content %}
+<main>
+  <section class="main-section section-darkblue">
+    <h1>Formulario para nueva actividad</h1>
+  </section>
+  <section class="main-section section-lightblue" style="min-height: 100vh">
+    <form class="activity-form">
+      <fieldset class="form-section">
+        <legend class="form-legend" style="border-top: none">
+          ¿Donde se realizara la actividad?
+        </legend>
+        <br />
+        <div class="field-section">
+          <label for="region">Region:</label>
+          <select name="region" id="region" autocomplete="off" required>
+            <option value="">Selecciona la region...</option>
+          </select>
+        </div>
+        <div class="field-section">
+          <label for="comuna">Comuna:</label>
+          <select name="comuna" id="comuna" required>
+            <option value="">Selecciona la comuna...</option>
+          </select>
+        </div>
+        <div class="field-section">
+          <label for="sector">Sector:</label>
+          <input
+            type="text"
+            name="sector"
+            id="sector"
+            maxlength="100"
+            placeholder="Opcional"
+          />
+        </div>
+      </fieldset>
+      <fieldset class="form-section">
+        <legend class="form-legend">¿Quien organiza la actividad?</legend>
+        <br />
+        <div class="field-section">
+          <label for="name">Nombre del organizador:</label>
+          <input
+            type="text"
+            name="name"
+            id="name"
+            maxlength="200"
+            required
+            placeholder="Nombre y ambos apellidos"
+            autocomplete="off"
+          />
+        </div>
+        <div class="field-section">
+          <label for="e-mail">Email de contacto:</label>
+          <input
+            type="email"
+            id="e-mail"
+            name="e-mail"
+            maxlength="100"
+            required
+            placeholder="micorreo@gmail.com"
+            pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+            title="Escribe tu correo electronico..."
+          />
+        </div>
+        <div class="field-section">
+          <label for="phone">Numero de celular:</label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            pattern="\+[0-9]{3}\.[0-9]{8}"
+            placeholder="+569.12345678"
+            autocomplete="off"
+          />
+        </div>
+        <fieldset class="form-section">
+          <legend class="strong-legend">Redes sociales</legend>
+          <div class="field-section">
+            <label for="wtsp">Whatsapp</label>
+            <input
+              type="checkbox"
+              id="wtsp"
+              name="contact"
+              value="wtsp"
+              onchange="revisaCheck(this)"
+            />
+            <input
+              type="text"
+              id="wtsp-field"
+              class="special"
+              minlength="4"
+              maxlength="50"
+              disabled
+            />
+          </div>
+          <div class="field-section">
+            <label for="telegram">Telegram</label>
+            <input
+              type="checkbox"
+              id="telegram"
+              name="contact"
+              value="telegram"
+              onchange="revisaCheck(this)"
+            />
+            <input
+              type="text"
+              id="telegram-field"
+              class="special"
+              minlength="4"
+              maxlength="50"
+              disabled
+            />
+          </div>
+          <div class="field-section">
+            <label for="instagram">Instagram</label>
+            <input
+              type="checkbox"
+              id="instagram"
+              name="contact"
+              value="instagram"
+              onchange="revisaCheck(this)"
+            />
+            <input
+              type="text"
+              id="instagram-field"
+              class="special"
+              minlength="4"
+              maxlength="50"
+              disabled
+            />
+          </div>
+          <div class="field-section">
+            <label for="twitter">X</label>
+            <input
+              type="checkbox"
+              id="twitter"
+              name="contact"
+              value="twitter"
+              onchange="revisaCheck(this)"
+            />
+            <input
+              type="text"
+              id="twitter-field"
+              class="special"
+              minlength="4"
+              maxlength="50"
+              disabled
+            />
+          </div>
+          <div class="field-section">
+            <label for="tiktok">TikTok</label>
+            <input
+              type="checkbox"
+              id="tiktok"
+              name="contact"
+              value="tiktok"
+              onchange="revisaCheck(this)"
+            />
+            <input
+              type="text"
+              id="tiktok-field"
+              class="special"
+              minlength="4"
+              maxlength="50"
+              disabled
+            />
+          </div>
+        </fieldset>
+      </fieldset>
+      <fieldset class="form-section">
+        <legend class="form-legend">¿Cuando y de que trata el evento?</legend>
+        <div class="field-section">
+          <label for="start-time">Dia y hora de incio:</label>
+          <input
+            type="datetime-local"
+            id="start-time"
+            name="start-time"
+            required
+          />
+        </div>
+        <div class="field-section">
+          <label for="finish-time">Dia y hora de termino:</label>
+          <input type="datetime-local" id="finish-time" name="finish-time" />
+        </div>
+        <div class="field-section">
+          <label for="description">Describe tu evento:</label>
+
+          <textarea id="description" name="description" rows="10" cols="50">
+En este evento celebraremos...</textarea
+          >
+        </div>
+        <fieldset class="form-section">
+          <legend class="strong-legend">Tema/s del evento</legend>
+          <div class="field-section">
+            <label for="music">Musica</label>
+            <input type="checkbox" id="music" name="theme" value="music" />
+          </div>
+          <div class="field-section">
+            <label for="sport">Deporte</label>
+            <input type="checkbox" id="sport" name="theme" value="sport" />
+          </div>
+          <div class="field-section">
+            <label for="science">Ciencias</label>
+            <input type="checkbox" id="science" name="theme" value="science" />
+          </div>
+          <div class="field-section">
+            <label for="religion">Religion</label>
+            <input
+              type="checkbox"
+              id="religion"
+              name="theme"
+              value="religion"
+            />
+          </div>
+          <div class="field-section">
+            <label for="politics">Politica</label>
+            <input
+              type="checkbox"
+              id="politics"
+              name="theme"
+              value="politics"
+            />
+          </div>
+          <div class="field-section">
+            <label for="technology">Tecnologia</label>
+            <input
+              type="checkbox"
+              id="technology"
+              name="theme"
+              value="technology"
+            />
+          </div>
+          <div class="field-section">
+            <label for="games">Juegos</label>
+            <input type="checkbox" id="games" name="theme" value="games" />
+          </div>
+          <div class="field-section">
+            <label for="dancing">Baile</label>
+            <input type="checkbox" id="dancing" name="theme" value="dancing" />
+          </div>
+          <div class="field-section">
+            <label for="food">Comida</label>
+            <input type="checkbox" id="food" name="theme" value="food" />
+          </div>
+          <div class="field-section">
+            <label for="other">Otro</label>
+            <input
+              type="checkbox"
+              id="other"
+              name="theme"
+              value="other"
+              onchange="revisaCheck(this)"
+            />
+            <input
+              type="text"
+              class="special"
+              id="other-field"
+              minlength="3"
+              maxlength="15"
+              placeholder="Especifica el tema"
+              disabled
+            />
+          </div>
+        </fieldset>
+        <div
+          class="field-section"
+          style="flex-direction: column; gap: 0.5rem"
+          id="photos"
+        >
+          <label for="photo1">Foto:</label>
+          <input
+            type="file"
+            id="photo1"
+            name="photos"
+            accept="image/png, image/jpg"
+            required
+          />
+        </div>
+        <button
+          type="button"
+          style="margin: 0.5rem; width: 50%; align-self: center"
+          onclick="agregarFoto();"
+        >
+          Agregar otra foto
+        </button>
+      </fieldset>
+      <div class="field-section" style="gap: 0.5rem">
+        <button type="submit">Agregar esta actividad</button>
+        <button type="button">Cancelar</button>
+      </div>
+    </form>
+  </section>
+</main>
+
+<script>
+  function revisaCheck(element) {
+    const inputField = document.getElementById(element.id + "-field");
+    if (element.checked) {
+      inputField.disabled = false;
+      inputField.focus();
+    } else {
+      inputField.value = "";
+      inputField.disabled = true;
+    }
+  }
+
+  let numFotos = 1;
+
+  function agregarFoto() {
+    if (numFotos >= 5) {
+      alert("No puede agregar más de 5 fotos.");
+      return;
+    }
+    numFotos++;
+    const fotoContainer = document.getElementById("photos");
+    const nuevoInput = document.createElement("input");
+    nuevoInput.type = "file";
+    nuevoInput.accept = "image/jpg, image/png";
+    nuevoInput.id = "photo" + numFotos;
+    fotoContainer.appendChild(nuevoInput);
+  }
+
+  function validarFormulario() {
+    const email = document.getElementById("e-mail").value;
+    if (!validarEmail(email)) {
+      alert("Formato de email no válido.");
+      return false;
+    }
+
+    function validarTelefono(telefono) {
+      const telefonoRegex = /^\+\d{3}\.\d{8}$/;
+      return telefonoRegex.test(telefono);
+    }
+
+    function validarEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+
+    const telefono = document.getElementById("phone").value;
+
+    if (telefono && !validarTelefono(telefono)) {
+      alert(
+        "El número de teléfono debe seguir el formato +NNN.NNNNNNNN, por ejemplo: +569.12345678."
+      );
+      return false;
+    }
+
+    const fotos = document.querySelectorAll("input[type='file']");
+    if (fotos.length < 1) {
+      alert("Debe subir al menos una foto.");
+      return false;
+    }
+
+    alert("Formulario enviado correctamente.");
+
+    return true;
+  }
+</script>
+{% endblock %}

@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Roboto", sans-serif;
+  font-family: "Comic Mono";
 }
 
 h1 {
@@ -17,7 +17,7 @@ header {
   background-color: #e3fdfd;
 }
 
-body main {
+main {
   display: flex;
   flex-direction: column;
 }
@@ -33,7 +33,6 @@ ol.nav-list {
   flex-direction: row;
   justify-content: space-evenly;
   gap: 1rem;
-  border-bottom: 1px solid;
 }
 
 li.nav-item {
@@ -62,18 +61,75 @@ li.nav-item {
   padding-bottom: 0.5rem;
 }
 
-#welcome-section {
+.section-darkblue {
   color: white;
   background-color: #0077b6;
 }
 
-#newest-activities {
+.section-lightblue {
   background-color: #ade8f4;
 }
 
-main {
-  background-color: #ade8f4;
-  min-height: 100vh;
+.activity-form {
+  border: 2px solid;
+  border-color: black;
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(237 238 242);
+  flex-shrink: 1;
+}
+
+.form-section {
+  border: none;
+  flex-direction: column;
+  display: flex;
+}
+
+.strong-legend {
+  padding: 0.5rem;
+  text-decoration: underline;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.form-legend {
+  display: flex;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-bottom: 2px solid;
+  border-top: 2px solid;
+  background-color: rgb(228 240 245);
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.field-section {
+  display: flex;
+  padding: 1rem;
+}
+
+.field-section label,
+.field-section input,
+.field-section select,
+.field-section button {
+  flex: 1;
+  text-align: left;
+}
+
+.field-section .special {
+  flex: 4;
+  text-align: left;
+}
+
+.form-button {
+  display: flex;
+}
+
+.input-label {
+  width: 50%;
 }
 
 table {
