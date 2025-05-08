@@ -5,7 +5,13 @@
     <h1>Formulario para nueva actividad</h1>
   </section>
   <section class="main-section section-lightblue" style="min-height: 100vh">
-    <form class="activity-form">
+    <form
+      class="activity-form"
+      method="POST"
+      action="{{ url_for('main.procesar_agregar') }}"
+      enctype="multipart/form-data"
+      onsubmit="return validateForm();"
+    >
       <fieldset class="form-section">
         <legend class="form-legend" style="border-top: none">
           ¿Donde se realizara la actividad?
@@ -15,6 +21,9 @@
           <label for="region">Region:</label>
           <select name="region" id="region" autocomplete="off" required>
             <option value="">Selecciona la region...</option>
+            {% for region in regiones %}
+            <option value="{{ region.id }}">{{ region.nombre }}</option>
+            {% endfor %}
           </select>
         </div>
         <div class="field-section">
@@ -58,7 +67,7 @@
             maxlength="100"
             required
             placeholder="micorreo@gmail.com"
-            pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+            pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
             title="Escribe tu correo electronico..."
           />
         </div>
@@ -76,17 +85,18 @@
         <fieldset class="form-section">
           <legend class="strong-legend">Redes sociales</legend>
           <div class="field-section">
-            <label for="wtsp">Whatsapp</label>
+            <label for="whatsapp">Whatsapp</label>
             <input
               type="checkbox"
-              id="wtsp"
+              id="whatsapp"
               name="contact"
-              value="wtsp"
-              onchange="revisaCheck(this)"
+              value="whatsapp"
+              onchange="revisaCheckSocials(this)"
             />
             <input
               type="text"
-              id="wtsp-field"
+              id="whatsapp-field"
+              name="whatsapp"
               class="special"
               minlength="4"
               maxlength="50"
@@ -100,11 +110,12 @@
               id="telegram"
               name="contact"
               value="telegram"
-              onchange="revisaCheck(this)"
+              onchange="revisaCheckSocials(this)"
             />
             <input
               type="text"
               id="telegram-field"
+              name="telegram"
               class="special"
               minlength="4"
               maxlength="50"
@@ -118,11 +129,12 @@
               id="instagram"
               name="contact"
               value="instagram"
-              onchange="revisaCheck(this)"
+              onchange="revisaCheckSocials(this)"
             />
             <input
               type="text"
               id="instagram-field"
+              name="instagram"
               class="special"
               minlength="4"
               maxlength="50"
@@ -130,17 +142,18 @@
             />
           </div>
           <div class="field-section">
-            <label for="twitter">X</label>
+            <label for="X">X</label>
             <input
               type="checkbox"
-              id="twitter"
+              id="X"
               name="contact"
-              value="twitter"
-              onchange="revisaCheck(this)"
+              value="X"
+              onchange="revisaCheckSocials(this)"
             />
             <input
               type="text"
-              id="twitter-field"
+              id="X-field"
+              name="X"
               class="special"
               minlength="4"
               maxlength="50"
@@ -154,11 +167,12 @@
               id="tiktok"
               name="contact"
               value="tiktok"
-              onchange="revisaCheck(this)"
+              onchange="revisaCheckSocials(this)"
             />
             <input
               type="text"
               id="tiktok-field"
+              name="tiktok"
               class="special"
               minlength="4"
               maxlength="50"
@@ -184,24 +198,28 @@
         </div>
         <div class="field-section">
           <label for="description">Describe tu evento:</label>
-
-          <textarea id="description" name="description" rows="10" cols="50">
-En este evento celebraremos...</textarea
-          >
+          <textarea
+            id="description"
+            name="description"
+            rows="10"
+            cols="50"
+            maxlength="500"
+            placeholder="Escribe una breve descripcion de tu evento..."
+          ></textarea>
         </div>
         <fieldset class="form-section">
           <legend class="strong-legend">Tema/s del evento</legend>
           <div class="field-section">
             <label for="music">Musica</label>
-            <input type="checkbox" id="music" name="theme" value="music" />
+            <input type="checkbox" id="music" name="theme" value="música" />
           </div>
           <div class="field-section">
             <label for="sport">Deporte</label>
-            <input type="checkbox" id="sport" name="theme" value="sport" />
+            <input type="checkbox" id="sport" name="theme" value="deporte" />
           </div>
           <div class="field-section">
             <label for="science">Ciencias</label>
-            <input type="checkbox" id="science" name="theme" value="science" />
+            <input type="checkbox" id="science" name="theme" value="ciencias" />
           </div>
           <div class="field-section">
             <label for="religion">Religion</label>
@@ -209,7 +227,7 @@ En este evento celebraremos...</textarea
               type="checkbox"
               id="religion"
               name="theme"
-              value="religion"
+              value="religión"
             />
           </div>
           <div class="field-section">
@@ -218,7 +236,7 @@ En este evento celebraremos...</textarea
               type="checkbox"
               id="politics"
               name="theme"
-              value="politics"
+              value="política"
             />
           </div>
           <div class="field-section">
@@ -227,20 +245,20 @@ En este evento celebraremos...</textarea
               type="checkbox"
               id="technology"
               name="theme"
-              value="technology"
+              value="tecnología"
             />
           </div>
           <div class="field-section">
             <label for="games">Juegos</label>
-            <input type="checkbox" id="games" name="theme" value="games" />
+            <input type="checkbox" id="games" name="theme" value="juegos" />
           </div>
           <div class="field-section">
             <label for="dancing">Baile</label>
-            <input type="checkbox" id="dancing" name="theme" value="dancing" />
+            <input type="checkbox" id="dancing" name="theme" value="baile" />
           </div>
           <div class="field-section">
             <label for="food">Comida</label>
-            <input type="checkbox" id="food" name="theme" value="food" />
+            <input type="checkbox" id="food" name="theme" value="comida" />
           </div>
           <div class="field-section">
             <label for="other">Otro</label>
@@ -248,16 +266,17 @@ En este evento celebraremos...</textarea
               type="checkbox"
               id="other"
               name="theme"
-              value="other"
-              onchange="revisaCheck(this)"
+              value="otro"
+              onchange="revisaCheckSocials(this)"
             />
             <input
               type="text"
               class="special"
               id="other-field"
+              name="other-theme-text"
               minlength="3"
               maxlength="15"
-              placeholder="Especifica el tema"
+              placeholder="Especifica el tema (3-15 caracteres)"
               disabled
             />
           </div>
@@ -265,35 +284,59 @@ En este evento celebraremos...</textarea
         <div
           class="field-section"
           style="flex-direction: column; gap: 0.5rem"
-          id="photos"
+          id="photos-container"
         >
           <label for="photo1">Foto:</label>
           <input
             type="file"
             id="photo1"
             name="photos"
-            accept="image/png, image/jpg"
+            accept="image/png, image/jpg, image/jpeg"
             required
           />
         </div>
         <button
           type="button"
           style="margin: 0.5rem; width: 50%; align-self: center"
-          onclick="agregarFoto();"
+          onclick="addPhoto();"
         >
           Agregar otra foto
         </button>
       </fieldset>
       <div class="field-section" style="gap: 0.5rem">
-        <button type="submit">Agregar esta actividad</button>
-        <button type="button">Cancelar</button>
+        <button type="submit">Enviar</button>
+        <button
+          type="button"
+          onclick="window.location.href='{{ url_for('main.home') }}'"
+        >
+          Cancelar
+        </button>
       </div>
     </form>
   </section>
 </main>
 
 <script>
-  function revisaCheck(element) {
+  const regionSelect = document.getElementById("region");
+  const comunaSelect = document.getElementById("comuna");
+  const comunasPorRegion = {{ comunas_json|safe }};
+
+  regionSelect.addEventListener("change", function () {
+    const selectedRegion = this.value;
+    comunaSelect.innerHTML =
+      "<option value=''>Selecciona la comuna...</option>";
+    if (comunasPorRegion[selectedRegion]) {
+      const comunas = comunasPorRegion[selectedRegion];
+      for (const comuna of comunas) {
+        const option = document.createElement("option");
+        option.value = comuna.id;
+        option.textContent = comuna.nombre;
+        comunaSelect.appendChild(option);
+      }
+    }
+  });
+
+  function revisaCheckSocials(element) {
     const inputField = document.getElementById(element.id + "-field");
     if (element.checked) {
       inputField.disabled = false;
@@ -304,56 +347,142 @@ En este evento celebraremos...</textarea
     }
   }
 
-  let numFotos = 1;
+  let numPhotos = 1;
 
-  function agregarFoto() {
-    if (numFotos >= 5) {
+  function addPhoto() {
+    if (numPhotos >= 5) {
       alert("No puede agregar más de 5 fotos.");
       return;
     }
-    numFotos++;
-    const fotoContainer = document.getElementById("photos");
-    const nuevoInput = document.createElement("input");
-    nuevoInput.type = "file";
-    nuevoInput.accept = "image/jpg, image/png";
-    nuevoInput.id = "photo" + numFotos;
-    fotoContainer.appendChild(nuevoInput);
+    numPhotos++;
+    const photoContainer = document.getElementById("photos-container");
+    const newInput = document.createElement("input");
+    newInput.type = "file";
+    newInput.accept = "image/jpg, image/png, image/jpeg";
+    newInput.name = "photos";
+    newInput.id = "photo" + numPhotos;
+    photoContainer.appendChild(newInput);
   }
 
-  function validarFormulario() {
+  validateEmail = (email) => {
+    const regex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+    return regex.test(email);
+  };
+
+  validatePhone = (phone) => {
+    const regex = /^\+[0-9]{3}\.[0-9]{8}$/;
+    return regex.test(phone);
+  };
+
+  //If a social media checkbox is checked, was something written in the field?
+  function validateSocials() {
+    //Socials are checkboxes with name='contact'
+    const socials = document.querySelectorAll('input[name="contact"]');
+    for (let i = 0; i < socials.length; i++) {
+      if (socials[i].checked) {
+        const field = document.getElementById(socials[i].id + "-field");
+        if (field.value.length < 4) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  //Was at least 1 theme selected?
+  function validateTheme() {
+    const themes = document.querySelectorAll('input[name="theme"]');
+    for (let i = 0; i < themes.length; i++) {
+      if (themes[i].checked) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  //If theme 'other' is selected, check if characters are between 3 and 15
+  function validateOtherTheme() {
+    const otherField = document.getElementById("other-field");
+    if (otherField.value.length < 3 || otherField.value.length > 15) {
+      return false;
+    }
+    return true;
+  }
+
+  //Did the user upload at least 1 photo?
+  function validatePhotos() {
+    const photos = document.querySelectorAll('input[type="file"]');
+    for (let i = 0; i < photos.length; i++) {
+      if (photos[i].files.length > 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  //Is the finish time after the start time?
+  function validateTime() {
+    const startTime = document.getElementById("start-time").value;
+    const finishTime = document.getElementById("finish-time").value;
+    if (startTime && finishTime) {
+      if (new Date(startTime) >= new Date(finishTime)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  //Is the form valid? All validations must be true
+  function validateForm() {
+    const name = document.getElementById("name").value;
     const email = document.getElementById("e-mail").value;
-    if (!validarEmail(email)) {
-      alert("Formato de email no válido.");
+    const phone = document.getElementById("phone").value;
+    const description = document.getElementById("description").value;
+    const region = document.getElementById("region").value;
+    const comuna = document.getElementById("comuna").value;
+
+    if (!region || !comuna) {
+      alert("Por favor, selecciona una región y una comuna.");
       return false;
     }
 
-    function validarTelefono(telefono) {
-      const telefonoRegex = /^\+\d{3}\.\d{8}$/;
-      return telefonoRegex.test(telefono);
-    }
-
-    function validarEmail(email) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailRegex.test(email);
-    }
-
-    const telefono = document.getElementById("phone").value;
-
-    if (telefono && !validarTelefono(telefono)) {
-      alert(
-        "El número de teléfono debe seguir el formato +NNN.NNNNNNNN, por ejemplo: +569.12345678."
-      );
+    if (!validateEmail(email)) {
+      alert("El correo electrónico no es válido.");
       return false;
     }
 
-    const fotos = document.querySelectorAll("input[type='file']");
-    if (fotos.length < 1) {
-      alert("Debe subir al menos una foto.");
+    if (phone && !validatePhone(phone)) {
+      alert("El número de teléfono no es válido.");
       return false;
     }
 
-    alert("Formulario enviado correctamente.");
+    if (!validateSocials()) {
+      alert("Por favor, completa los campos de redes sociales.");
+      return false;
+    }
 
+    if (!validateTime()) {
+      alert("La fecha de inicio debe ser anterior a la fecha de término.");
+      return false;
+    }
+
+    if (!validateTheme()) {
+      alert("Por favor, selecciona al menos un tema.");
+      return false;
+    }
+
+    if (document.getElementById("other").checked && !validateOtherTheme()) {
+      alert("El tema 'Otro' debe tener entre 3 y 15 caracteres.");
+      return false;
+    }
+
+    if (!validatePhotos()) {
+      alert("Por favor, sube al menos una foto.");
+      return false;
+    }
+
+    // If all validations pass, submit the form
+    alert("Formulario enviado con éxito!");
     return true;
   }
 </script>

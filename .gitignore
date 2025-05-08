@@ -9,6 +9,7 @@ instance/
 
 # Static files cache
 app/static/cache/
+app/static/uploads/
 
 # Environment variables file
 .env
