@@ -28,6 +28,8 @@ class Actividad(db.Model):
     descripcion = db.Column(db.String(500), nullable=True)
     temas = db.relationship('ActividadTema', backref='actividad', lazy='joined', cascade="all, delete-orphan")
     fotos = db.relationship('Foto', backref='actividad', lazy='joined', cascade="all, delete-orphan")
+    comuna = db.relationship('Comuna', lazy='joined')
+    
 class TemaEnum(enum.Enum):
     MUSICA = 'música'
     DEPORTE = 'deporte'
@@ -43,7 +45,7 @@ class TemaEnum(enum.Enum):
 class ActividadTema(db.Model):
     __tablename__ = 'actividad_tema'
     id = db.Column(db.Integer, primary_key=True)
-    tema = db.Column(db.Enum(TemaEnum), nullable=False)
+    tema = db.Column(db.Enum(TemaEnum, values_callable=lambda obj: [e.value for e in obj]), nullable=False)
     glosa_otro = db.Column(db.String(15), nullable=True)
     actividad_id = db.Column(db.Integer, db.ForeignKey('actividad.id'), nullable=False)
 
@@ -65,7 +67,8 @@ class Foto(db.Model):
 class ContactarPor(db.Model):
     __tablename__ = 'contactar_por'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    nombre = db.Column(db.Enum(ContactosEnum), nullable=False)
+    nombre = db.Column(
+    db.Enum(ContactosEnum, values_callable=lambda obj: [e.value for e in obj]), nullable=False)
     identificador = db.Column(db.String(150), nullable=False)
     actividad_id = db.Column(db.Integer, db.ForeignKey('actividad.id'), primary_key=True)
 

@@ -13,7 +13,37 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def home():
-    return render_template('index.html')
+
+    actividades = (Actividad.query.order_by(Actividad.id.desc()).limit(5).all())
+
+    datos_actividades = []
+
+    for actividad in actividades:
+
+        primera_foto_ruta = None
+        if actividad.fotos:
+            primera_foto_ruta = actividad.fotos[0].ruta_archivo
+
+        temas = []
+        for tema in actividad.temas:
+            if tema.tema == TemaEnum.OTRO:
+                temas.append(tema.glosa_otro)
+            else:
+                temas.append(tema.tema.value)
+
+        actividad_data = {
+            "nombre": actividad.nombre,
+            "sector": actividad.sector if actividad.sector else "-",
+            "comuna": actividad.comuna.nombre,
+            "temas": temas,
+            "foto": primera_foto_ruta,
+            "fecha_inicio": actividad.dia_hora_inicio.strftime("%Y-%m-%d %H:%M"),
+            "fecha_termino": actividad.dia_hora_termino.strftime("%Y-%m-%d %H:%M") if actividad.dia_hora_termino else "-",
+        }
+
+        datos_actividades.append(actividad_data)
+
+    return render_template('index.html', actividades=datos_actividades)
 
 @main.route("/agregar")
 def agregar():
@@ -325,7 +355,7 @@ def procesar_agregar():
         file_storage.save(full_path)
 
         foto_bd = Foto(
-            ruta_archivo=f"/static/uploads/{unique_name}",
+            ruta_archivo=f"/uploads/{unique_name}",
             nombre_archivo=original_name,
             actividad_id=nueva_actividad.id
         )

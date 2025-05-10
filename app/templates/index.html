@@ -19,52 +19,28 @@ content %}
         </tr>
       </thead>
       <tbody>
+        {% for actividad in actividades %}
         <tr>
-          <td>s</td>
-          <td>s</td>
-          <td>s</td>
-          <td>s</td>
-          <td>ss</td>
+          <td>{{ actividad.fecha_inicio }}</td>
+          <td>{{ actividad.fecha_termino }}</td>
+          <td>{{ actividad.comuna }}</td>
+          <td>{{ actividad.sector }}</td>
+          <td>
+            <ul style="margin: 1rem; align-self: center">
+              {% for tema in actividad.temas %}
+              <li style="padding-bottom: 1rem">{{ tema }}</li>
+              {% endfor %}
+            </ul>
+          </td>
           <td>
             <img
-              src="{{ url_for('static', filename='img/rock.jpg') }}"
-              alt="Es una roca"
+              src="{{ url_for('static', filename=actividad.foto) }}"
+              alt="Imagen de la actividad"
               class="activity-image"
             />
           </td>
         </tr>
-        <tr>
-          <td>s</td>
-          <td>s</td>
-          <td>s</td>
-          <td>s</td>
-          <td>ss</td>
-          <td>s</td>
-        </tr>
-        <tr>
-          <td>s</td>
-          <td>s</td>
-          <td>s</td>
-          <td>s</td>
-          <td>ss</td>
-          <td>s</td>
-        </tr>
-        <tr>
-          <td>s</td>
-          <td>s</td>
-          <td>s</td>
-          <td>s</td>
-          <td>ss</td>
-          <td>s</td>
-        </tr>
-        <tr>
-          <td>s</td>
-          <td>s</td>
-          <td>s</td>
-          <td>s</td>
-          <td>ss</td>
-          <td>s</td>
-        </tr>
+        {% endfor %}
       </tbody>
     </table>
   </section>
