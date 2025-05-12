@@ -20,28 +20,15 @@ def home():
 
     for actividad in actividades:
 
-        primera_foto_ruta = None
-        if actividad.fotos:
-            primera_foto_ruta = actividad.fotos[0].ruta_archivo
-
-        temas = []
-        for tema in actividad.temas:
-            if tema.tema == TemaEnum.OTRO:
-                temas.append(tema.glosa_otro)
-            else:
-                temas.append(tema.tema.value)
-
-        actividad_data = {
+        datos_actividades.append({  
             "nombre": actividad.nombre,
             "sector": actividad.sector if actividad.sector else "-",
             "comuna": actividad.comuna.nombre,
-            "temas": temas,
-            "foto": primera_foto_ruta,
+            "temas": [t.glosa_otro if t.tema == TemaEnum.OTRO else t.tema.value for t in actividad.temas],
+            "foto": actividad.fotos[0].ruta_archivo,
             "fecha_inicio": actividad.dia_hora_inicio.strftime("%Y-%m-%d %H:%M"),
             "fecha_termino": actividad.dia_hora_termino.strftime("%Y-%m-%d %H:%M") if actividad.dia_hora_termino else "-",
-        }
-
-        datos_actividades.append(actividad_data)
+        })
 
     return render_template('index.html', actividades=datos_actividades)
 
@@ -64,7 +51,56 @@ def agregar():
 
 @main.route('/listado')
 def listado():
-    return render_template('listado.html')
+    # Obtener el número de página actual (por defecto 1)
+    page = request.args.get('page', 1, type=int)
+    per_page = 5
+
+    # Consulta paginada
+    pagination = Actividad.query.order_by(Actividad.id.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    actividades = pagination.items
+
+    datos_actividades = []
+    for actividad in actividades:
+        datos_actividades.append({
+            'id': actividad.id,
+            'inicio': actividad.dia_hora_inicio.strftime("%Y-%m-%d %H:%M"),
+            'termino': actividad.dia_hora_termino.strftime("%Y-%m-%d %H:%M") if actividad.dia_hora_termino else "-",
+            'comuna': actividad.comuna.nombre,
+            'sector': actividad.sector or "-",
+            'temas': [t.glosa_otro if t.tema == TemaEnum.OTRO else t.tema.value for t in actividad.temas],
+            'organizador': actividad.nombre,
+            'total_fotos': len(actividad.fotos)
+        })
+
+    return render_template(
+        "listado.html",
+        actividades=datos_actividades,
+        page=page,
+        total_pages=pagination.pages
+    )
+
+
+@main.route('/actividad/<int:actividad_id>')
+def actividad_detalle(actividad_id):
+    actividad = Actividad.query.get_or_404(actividad_id)
+
+    actividad_datos = {
+        'inicio': actividad.dia_hora_inicio.strftime("%Y-%m-%d %H:%M"),
+        'termino': actividad.dia_hora_termino.strftime("%Y-%m-%d %H:%M") if actividad.dia_hora_termino else "-",
+        'comuna': actividad.comuna.nombre,
+        'sector': actividad.sector or "-",
+        'temas': [t.glosa_otro if t.tema == TemaEnum.OTRO else t.tema.value for t in actividad.temas],
+        'descripcion': actividad.descripcion or "-",
+        'organizador': actividad.nombre,
+        'email': actividad.email,
+        'celular': actividad.celular or "-",
+        'contactos': [{'tipo': contacto.nombre.value, 'valor': contacto.identificador} for contacto in actividad.contactos],
+        'fotos':  [{'ruta': foto.ruta_archivo, 'nombre': foto.nombre_archivo} for foto in actividad.fotos]
+    }
+
+    return render_template("actividad.html", actividad=actividad_datos)
+
+
 
 @main.route('/estadisticas')
 def estadisticas():

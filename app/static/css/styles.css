@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Comic Mono";
+  font-family: "Arial", sans-serif;
 }
 
 h1 {
@@ -176,4 +176,89 @@ tfoot td {
   height: 200px;
   object-fit: cover;
   border-radius: 8px;
+}
+
+.miniatura {
+  width: 320px;
+  height: 240px;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.miniatura-container {
+  border: 3px solid #0077b6;
+  background-color: #e3fdfd;
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 2rem;
+}
+
+.black-background {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.8);
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.close-img-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  background-color: white;
+  color: black;
+  font-size: 1.5rem;
+}
+
+.zoomed-image {
+  width: 800px;
+  height: 600px;
+  object-fit: cover;
+}
+
+.activity-details {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border: 1px solid #0077b6;
+  background-color: #e3fdfd;
+}
+
+.chart-container {
+  display: flex;
+  background-color: #e3fdfd;
+  gap: 5rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+}
+
+.styled-btn {
+  background-color: #f3f7fe;
+  color: #3b82f6;
+  border: none;
+  padding: 1rem;
+  cursor: pointer;
+  border-radius: 8px;
+  width: fit-content;
+  height: fit-content;
+  transition: 0.3s;
+}
+
+.styled-btn:hover {
+  background-color: #3b82f6;
+  box-shadow: 0 0 0 5px #3b83f65f;
+  color: #fff;
 }

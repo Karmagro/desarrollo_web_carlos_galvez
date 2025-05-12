@@ -1,0 +1,113 @@
+{% extends "layout.html" %} {% block title %}Estadísticas{% endblock %} {% block
+content %}
+<main>
+  <section class="main-section section-darkblue">
+    <h1>Estadísticas de la pagina</h1>
+    <p>
+      Visualización de datos sobre las actividades registradas en el sitio web.
+    </p>
+  </section>
+
+  <section class="main-section section-lightblue">
+    <div class="chart-container">
+      <section class="chart-section">
+        <h2>Cantidad de Actividades por Día</h2>
+        <canvas id="lineChart"></canvas>
+      </section>
+
+      <section class="chart-section">
+        <h2>Total de actividades por tipo</h2>
+        <canvas id="pieChart"></canvas>
+      </section>
+
+      <section class="chart-section">
+        <h2>Actividades por Horario y Mes</h2>
+        <canvas id="barChart"></canvas>
+      </section>
+    </div>
+
+    <div style="text-align: center; margin-top: 2rem">
+      <button
+        class="styled-btn"
+        onclick="location.href='{{ url_for('main.home')}}'"
+      >
+        Volver a la Portada
+      </button>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  new Chart(document.getElementById("lineChart"), {
+    type: "line",
+    data: {
+      labels: ["2025-04-01", "2025-04-02", "2025-04-03", "2025-04-04"],
+      datasets: [
+        {
+          label: "Actividades",
+          data: [3, 5, 2, 4],
+          borderColor: "black",
+          backgroundColor: "gray",
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+        },
+      },
+    },
+  });
+
+  new Chart(document.getElementById("pieChart"), {
+    type: "pie",
+    data: {
+      labels: ["Música", "Deporte", "Ciencias", "Comida", "Otro"],
+      datasets: [
+        {
+          data: [5, 3, 2, 4, 1],
+          backgroundColor: ["#000", "#555", "#999", "#ccc", "#eee"],
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+    },
+  });
+
+  new Chart(document.getElementById("barChart"), {
+    type: "bar",
+    data: {
+      labels: ["Abril", "Mayo", "Junio"],
+      datasets: [
+        {
+          label: "Mañana",
+          data: [3, 2, 4],
+          backgroundColor: "#000",
+        },
+        {
+          label: "Mediodía",
+          data: [2, 3, 3],
+          backgroundColor: "#999",
+        },
+        {
+          label: "Tarde",
+          data: [1, 4, 2],
+          backgroundColor: "#ccc",
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+        },
+      },
+    },
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "layout.html" %} {% block title %}Detalle de Actividad{% endblock %}
+{% block content %}
+<main>
+  <section class="main-section section-darkblue">
+    <h1>Detalle de actividad</h1>
+    <p>Explora los detalles de la actividad seleccionada.</p>
+  </section>
+
+  <section class="main-section section-lightblue" style="min-height: 100vh">
+    <ul class="activity-details">
+      <li><strong>Inicio:</strong> {{ actividad.inicio }}</li>
+      <li><strong>Término:</strong> {{ actividad.termino }}</li>
+      <li><strong>Comuna:</strong> {{ actividad.comuna }}</li>
+      <li><strong>Sector:</strong> {{ actividad.sector }}</li>
+      <li><strong>Temas:</strong> {{ actividad.temas | join(', ') }}</li>
+      <li><strong>Descripción:</strong> {{ actividad.descripcion }}</li>
+      <li><strong>Organizador:</strong> {{ actividad.organizador }}</li>
+      <li><strong>Email:</strong> {{ actividad.email }}</li>
+      <li><strong>Celular:</strong> {{ actividad.celular }}</li>
+      <li>
+        <strong>Redes Sociales:</strong>
+        <ul style="margin: 0.5rem 1rem; gap: 0.5rem">
+          {% for contacto in actividad.contactos %}
+          <li>{{ contacto.tipo }}: {{ contacto.valor }}</li>
+          {% endfor %}
+        </ul>
+      </li>
+    </ul>
+
+    <h2 style="margin-top: 1rem">Fotos:</h2>
+    <div class="miniatura-container">
+      {% for foto in actividad.fotos %}
+      <img
+        src="{{url_for('static', filename=foto.ruta)}}"
+        alt="{{ foto.nombre }}"
+        class="miniatura"
+        onclick="zoomImg(this.src)"
+      />
+      {% endfor %}
+    </div>
+
+    <div style="text-align: center; margin-top: 2rem">
+      <a href="{{ url_for('main.listado') }}">← Volver al listado</a> |
+      <a href="{{ url_for('main.home') }}">Ir a la portada</a>
+    </div>
+
+    <div id="large-container" class="black-background">
+      <div style="position: relative">
+        <img id="big-img" src="#" alt="empty" class="zoomed-image" />
+        <button class="close-img-btn" onclick="closeImg()">X</button>
+      </div>
+    </div>
+  </section>
+</main>
+s
+<script>
+  function zoomImg(imgElement) {
+    document.getElementById("big-img").src = imgElement;
+    document.getElementById("large-container").style.display = "flex";
+    document.getElementById("big-img").alt = "Zoomed image";
+  }
+
+  function closeImg() {
+    document.getElementById("large-container").style.display = "none";
+    document.getElementById("big-img").src = "#";
+    document.getElementById("big-img").alt = "empty";
+  }
+</script>
+{% endblock %}

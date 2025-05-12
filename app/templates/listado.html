@@ -1,0 +1,60 @@
+{% extends "layout.html" %} {% block title %}Listado de Actividades{% endblock
+%} {% block content %}
+<main>
+  <section class="main-section section-darkblue">
+    <h1>Listado de actividades</h1>
+    <p>¡Explora las distintas actividades en la plataforma!</p>
+  </section>
+  <section class="main-section section-lightblue" style="min-height: 100vh">
+    <h2 style="padding-bottom: 1rem">Actividades</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Inicio</th>
+          <th>Término</th>
+          <th>Comuna</th>
+          <th>Sector</th>
+          <th>Tema</th>
+          <th>Organizador</th>
+          <th>Total fotos</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for actividad in actividades %}
+        <tr
+          onclick="window.location.href='{{ url_for('main.actividad_detalle', actividad_id=actividad.id) }}'"
+          style="cursor: pointer"
+        >
+          <td>{{ actividad.inicio }}</td>
+          <td>{{ actividad.termino }}</td>
+          <td>{{ actividad.comuna }}</td>
+          <td>{{ actividad.sector }}</td>
+          <td>
+            <ul style="margin: 1rem; align-self: center">
+              {% for tema in actividad.temas %}
+              <li style="padding-bottom: 1rem">{{ tema }}</li>
+              {% endfor %}
+            </ul>
+          </td>
+          <td>{{ actividad.organizador }}</td>
+          <td style="text-align: center">{{ actividad.total_fotos }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div
+      class="pagination-controls"
+      style="margin-top: 1.5rem; text-align: center"
+    >
+      {% if page > 1 %}
+      <a href="{{ url_for('main.listado', page=page-1) }}">← Anterior</a>
+      {% endif %}
+      <span style="margin: 0 1rem">Página {{ page }} de {{ total_pages }}</span>
+      {% if page < total_pages %}
+      <a href="{{ url_for('main.listado', page=page+1) }}">Siguiente →</a>
+      {% endif %}
+    </div>
+  </section>
+</main>
+{%endblock %}

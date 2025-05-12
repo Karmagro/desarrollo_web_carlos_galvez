@@ -10,7 +10,7 @@
       method="POST"
       action="{{ url_for('main.procesar_agregar') }}"
       enctype="multipart/form-data"
-      onsubmit="return validateForm();"
+      onsubmit="return confirmAndSubmit();"
     >
       <fieldset class="form-section">
         <legend class="form-legend" style="border-top: none">
@@ -317,173 +317,184 @@
 </main>
 
 <script>
-  const regionSelect = document.getElementById("region");
-  const comunaSelect = document.getElementById("comuna");
-  const comunasPorRegion = {{ comunas_json|safe }};
+    const regionSelect = document.getElementById("region");
+    const comunaSelect = document.getElementById("comuna");
+    const comunasPorRegion = {{ comunas_json|safe }};
 
-  regionSelect.addEventListener("change", function () {
-    const selectedRegion = this.value;
-    comunaSelect.innerHTML =
-      "<option value=''>Selecciona la comuna...</option>";
-    if (comunasPorRegion[selectedRegion]) {
-      const comunas = comunasPorRegion[selectedRegion];
-      for (const comuna of comunas) {
-        const option = document.createElement("option");
-        option.value = comuna.id;
-        option.textContent = comuna.nombre;
-        comunaSelect.appendChild(option);
+    regionSelect.addEventListener("change", function () {
+      const selectedRegion = this.value;
+      comunaSelect.innerHTML =
+        "<option value=''>Selecciona la comuna...</option>";
+      if (comunasPorRegion[selectedRegion]) {
+        const comunas = comunasPorRegion[selectedRegion];
+        for (const comuna of comunas) {
+          const option = document.createElement("option");
+          option.value = comuna.id;
+          option.textContent = comuna.nombre;
+          comunaSelect.appendChild(option);
+        }
+      }
+    });
+
+    function revisaCheckSocials(element) {
+      const inputField = document.getElementById(element.id + "-field");
+      if (element.checked) {
+        inputField.disabled = false;
+        inputField.focus();
+      } else {
+        inputField.value = "";
+        inputField.disabled = true;
       }
     }
-  });
 
-  function revisaCheckSocials(element) {
-    const inputField = document.getElementById(element.id + "-field");
-    if (element.checked) {
-      inputField.disabled = false;
-      inputField.focus();
-    } else {
-      inputField.value = "";
-      inputField.disabled = true;
+    let numPhotos = 1;
+
+    function addPhoto() {
+      if (numPhotos >= 5) {
+        alert("No puede agregar más de 5 fotos.");
+        return;
+      }
+      numPhotos++;
+      const photoContainer = document.getElementById("photos-container");
+      const newInput = document.createElement("input");
+      newInput.type = "file";
+      newInput.accept = "image/jpg, image/png, image/jpeg";
+      newInput.name = "photos";
+      newInput.id = "photo" + numPhotos;
+      photoContainer.appendChild(newInput);
     }
-  }
 
-  let numPhotos = 1;
+    validateEmail = (email) => {
+      const regex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+      return regex.test(email);
+    };
 
-  function addPhoto() {
-    if (numPhotos >= 5) {
-      alert("No puede agregar más de 5 fotos.");
-      return;
+    validatePhone = (phone) => {
+      const regex = /^\+[0-9]{3}\.[0-9]{8}$/;
+      return regex.test(phone);
+    };
+
+    //If a social media checkbox is checked, was something written in the field?
+    function validateSocials() {
+      //Socials are checkboxes with name='contact'
+      const socials = document.querySelectorAll('input[name="contact"]');
+      for (let i = 0; i < socials.length; i++) {
+        if (socials[i].checked) {
+          const field = document.getElementById(socials[i].id + "-field");
+          if (field.value.length < 4) {
+            return false;
+          }
+        }
+      }
+      return true;
     }
-    numPhotos++;
-    const photoContainer = document.getElementById("photos-container");
-    const newInput = document.createElement("input");
-    newInput.type = "file";
-    newInput.accept = "image/jpg, image/png, image/jpeg";
-    newInput.name = "photos";
-    newInput.id = "photo" + numPhotos;
-    photoContainer.appendChild(newInput);
-  }
 
-  validateEmail = (email) => {
-    const regex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
-    return regex.test(email);
-  };
+    //Was at least 1 theme selected?
+    function validateTheme() {
+      const themes = document.querySelectorAll('input[name="theme"]');
+      for (let i = 0; i < themes.length; i++) {
+        if (themes[i].checked) {
+          return true;
+        }
+      }
+      return false;
+    }
 
-  validatePhone = (phone) => {
-    const regex = /^\+[0-9]{3}\.[0-9]{8}$/;
-    return regex.test(phone);
-  };
+    //If theme 'other' is selected, check if characters are between 3 and 15
+    function validateOtherTheme() {
+      const otherField = document.getElementById("other-field");
+      if (otherField.value.length < 3 || otherField.value.length > 15) {
+        return false;
+      }
+      return true;
+    }
 
-  //If a social media checkbox is checked, was something written in the field?
-  function validateSocials() {
-    //Socials are checkboxes with name='contact'
-    const socials = document.querySelectorAll('input[name="contact"]');
-    for (let i = 0; i < socials.length; i++) {
-      if (socials[i].checked) {
-        const field = document.getElementById(socials[i].id + "-field");
-        if (field.value.length < 4) {
+    //Did the user upload at least 1 photo?
+    function validatePhotos() {
+      const photos = document.querySelectorAll('input[type="file"]');
+      for (let i = 0; i < photos.length; i++) {
+        if (photos[i].files.length > 0) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    //Is the finish time after the start time?
+    function validateTime() {
+      const startTime = document.getElementById("start-time").value;
+      const finishTime = document.getElementById("finish-time").value;
+      if (startTime && finishTime) {
+        if (new Date(startTime) >= new Date(finishTime)) {
           return false;
         }
       }
+      return true;
     }
-    return true;
-  }
 
-  //Was at least 1 theme selected?
-  function validateTheme() {
-    const themes = document.querySelectorAll('input[name="theme"]');
-    for (let i = 0; i < themes.length; i++) {
-      if (themes[i].checked) {
-        return true;
-      }
-    }
-    return false;
-  }
+    //Is the form valid? All validations must be true
+    function validateForm() {
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("e-mail").value;
+      const phone = document.getElementById("phone").value;
+      const description = document.getElementById("description").value;
+      const region = document.getElementById("region").value;
+      const comuna = document.getElementById("comuna").value;
 
-  //If theme 'other' is selected, check if characters are between 3 and 15
-  function validateOtherTheme() {
-    const otherField = document.getElementById("other-field");
-    if (otherField.value.length < 3 || otherField.value.length > 15) {
-      return false;
-    }
-    return true;
-  }
-
-  //Did the user upload at least 1 photo?
-  function validatePhotos() {
-    const photos = document.querySelectorAll('input[type="file"]');
-    for (let i = 0; i < photos.length; i++) {
-      if (photos[i].files.length > 0) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  //Is the finish time after the start time?
-  function validateTime() {
-    const startTime = document.getElementById("start-time").value;
-    const finishTime = document.getElementById("finish-time").value;
-    if (startTime && finishTime) {
-      if (new Date(startTime) >= new Date(finishTime)) {
+      if (!region || !comuna) {
+        alert("Por favor, selecciona una región y una comuna.");
         return false;
       }
+
+      if (!validateEmail(email)) {
+        alert("El correo electrónico no es válido.");
+        return false;
+      }
+
+      if (phone && !validatePhone(phone)) {
+        alert("El número de teléfono no es válido.");
+        return false;
+      }
+
+      if (!validateSocials()) {
+        alert("Por favor, completa los campos de redes sociales.");
+        return false;
+      }
+
+      if (!validateTime()) {
+        alert("La fecha de inicio debe ser anterior a la fecha de término.");
+        return false;
+      }
+
+      if (!validateTheme()) {
+        alert("Por favor, selecciona al menos un tema.");
+        return false;
+      }
+
+      if (document.getElementById("other").checked && !validateOtherTheme()) {
+        alert("El tema 'Otro' debe tener entre 3 y 15 caracteres.");
+        return false;
+      }
+
+      if (!validatePhotos()) {
+        alert("Por favor, sube al menos una foto.");
+        return false;
+      }
+
+      return true;
     }
-    return true;
-  }
 
-  //Is the form valid? All validations must be true
-  function validateForm() {
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("e-mail").value;
-    const phone = document.getElementById("phone").value;
-    const description = document.getElementById("description").value;
-    const region = document.getElementById("region").value;
-    const comuna = document.getElementById("comuna").value;
-
-    if (!region || !comuna) {
-      alert("Por favor, selecciona una región y una comuna.");
+    function confirmAndSubmit() {
+    if (validateForm()) {
+      if (window.confirm("¿Estás seguro de que quieres enviar el formulario?")) {
+        alert("Formulario enviado con éxito!");
+        return true;
+      } else {
+        return false;
+      }
+    } else {
       return false;
     }
-
-    if (!validateEmail(email)) {
-      alert("El correo electrónico no es válido.");
-      return false;
-    }
-
-    if (phone && !validatePhone(phone)) {
-      alert("El número de teléfono no es válido.");
-      return false;
-    }
-
-    if (!validateSocials()) {
-      alert("Por favor, completa los campos de redes sociales.");
-      return false;
-    }
-
-    if (!validateTime()) {
-      alert("La fecha de inicio debe ser anterior a la fecha de término.");
-      return false;
-    }
-
-    if (!validateTheme()) {
-      alert("Por favor, selecciona al menos un tema.");
-      return false;
-    }
-
-    if (document.getElementById("other").checked && !validateOtherTheme()) {
-      alert("El tema 'Otro' debe tener entre 3 y 15 caracteres.");
-      return false;
-    }
-
-    if (!validatePhotos()) {
-      alert("Por favor, sube al menos una foto.");
-      return false;
-    }
-
-    // If all validations pass, submit the form
-    alert("Formulario enviado con éxito!");
-    return true;
   }
 </script>
 {% endblock %}
