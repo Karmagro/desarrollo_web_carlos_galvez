@@ -38,6 +38,11 @@ Este repositorio contiene la implementación de la Tarea 2 del curso CC5002 (Des
 - La carga de comunas según la región se realiza en el navegador usando un objeto JSON (`comunas_json`) generado desde Flask y embebido en el HTML.
 - No se crearon archivos `.js` separados, todo el JavaScript está dentro de los templates para mantener el prototipo autocontenido y claro.
 
+### Uso de XAMPP y configuración de MySQL
+
+- Para el desarrollo de este proyecto se utilizó XAMPP como entorno local para levantar el servicio de MySQL, sin necesidad de un servidor Apache. La base de datos se configuró accediendo a phpMyAdmin desde `http://localhost/phpmyadmin`.
+- El usuario fue creado manualmente a través de phpMyAdmin, usando la interfaz de gestión de usuarios.
+
 ---
 
 Desarrollado por: Carlos Galvez Romo

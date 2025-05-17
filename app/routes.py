@@ -13,7 +13,6 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def home():
-
     actividades = (Actividad.query.order_by(Actividad.id.desc()).limit(5).all())
 
     datos_actividades = []
@@ -51,11 +50,9 @@ def agregar():
 
 @main.route('/listado')
 def listado():
-    # Obtener el número de página actual (por defecto 1)
     page = request.args.get('page', 1, type=int)
     per_page = 5
 
-    # Consulta paginada
     pagination = Actividad.query.order_by(Actividad.id.desc()).paginate(page=page, per_page=per_page, error_out=False)
     actividades = pagination.items
 
@@ -387,7 +384,6 @@ def procesar_agregar():
         unique_name = f"{uuid.uuid4().hex}_{secure_filename(original_name)}"
         full_path = os.path.join(UPLOAD_FOLDER, unique_name)
 
-        # Guardar el archivo físico
         file_storage.save(full_path)
 
         foto_bd = Foto(
@@ -399,5 +395,5 @@ def procesar_agregar():
 
     db.session.commit()
 
-    flash("Formulario procesado y validado exitosamente (simulación).", "success")
+    flash("Formulario procesado y validado exitosamente.", "success")
     return redirect(url_for("main.home"))

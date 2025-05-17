@@ -14,8 +14,13 @@
     <title>{% block title %}Titulo{% endblock %}</title>
   </head>
   <body>
-    {% include "_header.html" %} {% block content %}
-    <h1>hello world</h1>
-    {% endblock %}
+    {% include "_header.html" %} {% with messages =
+    get_flashed_messages(with_categories=true) %} {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+      <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %} {% block content %}{% endblock %}
   </body>
 </html>
