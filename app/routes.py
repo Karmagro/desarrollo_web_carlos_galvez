@@ -1,13 +1,9 @@
-from enum import verify
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from .extensions import db
 from datetime import datetime
 from werkzeug.utils import secure_filename
-from app.models import Region, Comuna, Actividad, ActividadTema, Foto, TemaEnum, ContactosEnum, ContactarPor
-import json
-import re
-import uuid
-import os
+from app.models import Region, Comuna, Actividad, ActividadTema, Foto, Comentario, TemaEnum, ContactosEnum, ContactarPor
+import json, re, uuid, os
 
 main = Blueprint('main', __name__)
 
@@ -82,6 +78,7 @@ def actividad_detalle(actividad_id):
     actividad = Actividad.query.get_or_404(actividad_id)
 
     actividad_datos = {
+        'id': actividad.id,
         'inicio': actividad.dia_hora_inicio.strftime("%Y-%m-%d %H:%M"),
         'termino': actividad.dia_hora_termino.strftime("%Y-%m-%d %H:%M") if actividad.dia_hora_termino else "-",
         'comuna': actividad.comuna.nombre,
@@ -397,3 +394,69 @@ def procesar_agregar():
 
     flash("Formulario procesado y validado exitosamente.", "success")
     return redirect(url_for("main.home"))
+
+@main.route("/api/comentarios/<int:actividad_id>")
+def obtener_comentarios(actividad_id):
+    comentarios = Comentario.query.filter_by(actividad_id=actividad_id).order_by(Comentario.fecha.desc()).all()
+
+    resultado = [
+        {
+            "nombre": c.nombre,
+            "texto": c.texto,
+            "fecha": c.fecha.strftime("%Y-%m-%d %H:%M")
+        }
+        for c in comentarios
+    ]
+
+    return jsonify(resultado)
+
+def verify_comment_name(nombre):
+    if not nombre or not (3 <= len(nombre) <= 80):
+        return False, "El nombre debe tener entre 3 y 80 caracteres."
+    return True, None
+
+def verify_comment_text(texto):
+    if not texto or len(texto) < 5:
+        return False, "El comentario debe tener al menos 5 caracteres."
+    return True, None
+
+def verify_activity_exists(actividad_id):
+    actividad = Actividad.query.get(actividad_id)
+    if not actividad:
+        return False, "La actividad no existe."
+    return True, None
+
+@main.route("/api/comentarios/<int:actividad_id>", methods=["POST"])
+def agregar_comentario(actividad_id):
+    data = request.get_json()
+
+    nombre = data.get("nombre", "").strip()
+    texto = data.get("texto", "").strip()
+
+    errores = []
+
+    is_name_valid, name_error = verify_comment_name(nombre)
+    if not is_name_valid:
+        errores.append(name_error)
+
+    is_text_valid, text_error = verify_comment_text(texto)
+    if not is_text_valid:
+        errores.append(text_error)
+
+    is_actividad_valid, actividad_error = verify_activity_exists(actividad_id)
+    if not is_actividad_valid:
+        errores.append(actividad_error)
+
+    if errores:
+        return jsonify({"ok": False, "errores": errores}), 400
+
+    nuevo_comentario = Comentario(
+        nombre=nombre,
+        texto=texto,
+        actividad_id=actividad_id
+    )
+
+    db.session.add(nuevo_comentario)
+    db.session.commit()
+
+    return jsonify({"ok": True, "mensaje": "Comentario agregado correctamente."})

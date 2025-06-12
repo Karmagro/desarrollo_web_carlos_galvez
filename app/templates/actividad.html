@@ -39,6 +39,38 @@
       {% endfor %}
     </div>
 
+    <h2 style="margin-top: 2rem">Comentarios:</h2>
+    <div id="comments-container" class="comments-container"></div>
+
+    <h3 style="margin-top: 2rem">Agrega un comentario:</h3>
+    <div id="formulario-comentario" class="comments-container">
+      <div class="name-section">
+        <label for="comentario-nombre">Nombre:</label>
+        <input
+          type="text"
+          id="comentario-nombre"
+          maxlength="80"
+          placeholder="Ingresa tu nombre..."
+          required
+        />
+      </div>
+      <div class="text-section">
+        <label for="comentario-texto">Comentario:</label>
+        <textarea
+          id="comentario-texto"
+          rows="4"
+          cols="50"
+          maxlength="300"
+          placeholder="Escribe tu comentario..."
+          required
+        ></textarea>
+      </div>
+      <button type="button" id="comentario-enviar" class="comment-btn">
+        Agregar comentario
+      </button>
+      <div id="comentario-errores" style="margin-top: 1rem; color: red"></div>
+    </div>
+
     <div style="text-align: center; margin-top: 2rem">
       <a href="{{ url_for('main.listado') }}">← Volver al listado</a> |
       <a href="{{ url_for('main.home') }}">Ir a la portada</a>
@@ -52,7 +84,7 @@
     </div>
   </section>
 </main>
-s
+
 <script>
   function zoomImg(imgElement) {
     document.getElementById("big-img").src = imgElement;
@@ -65,5 +97,100 @@ s
     document.getElementById("big-img").src = "#";
     document.getElementById("big-img").alt = "empty";
   }
+
+  function escapeHtml(text) {
+    const div = document.createElement("div");
+    div.innerText = text;
+    return div.innerHTML;
+  }
+
+  const actividadId = {{actividad.id}};
+
+  const comentariosDiv = document.getElementById("comments-container");
+
+  function crearComentarioDiv(comentario) {
+    const contenedor = document.createElement("div");
+    contenedor.className = "comment-item";
+
+    const texto = `
+      <p><strong>${escapeHtml(comentario.nombre)}</strong> <span style="font-size:0.8em; color: #ccc;">(${comentario.fecha})</span></p>
+      <p>${escapeHtml(comentario.texto)}</p> `;
+
+    contenedor.innerHTML = texto;
+
+    return contenedor;
+  }
+
+  function cargarComentarios() {
+    fetch(`/api/comentarios/${actividadId}`)
+      .then((response) => {
+        if (!response.ok) throw new Error("No se pudieron cargar los comentarios.");
+        return response.json();
+      })
+      .then((comentarios) => {
+        comentariosDiv.innerHTML = "";
+
+        if (comentarios.length === 0) {
+          comentariosDiv.innerHTML = "<p>Todavia no hay comentarios, agrega uno!</p>";
+        } else {
+          comentarios.forEach((comentario) => {
+            const elemento = crearComentarioDiv(comentario);
+            comentariosDiv.appendChild(elemento);
+          });
+        }
+      })
+      .catch((error) => {
+        comentariosDiv.innerHTML = `<p style="color: red;">${error.message}</p>`;
+      });
+  }
+
+  cargarComentarios();
+
+
+  const btnAgregar = document.getElementById("comentario-enviar");
+  const inputNombre = document.getElementById("comentario-nombre");
+  const inputTexto = document.getElementById("comentario-texto");
+  const errorDiv = document.getElementById("comentario-errores");
+
+  btnAgregar.addEventListener("click", function () {
+    const nombre = inputNombre.value.trim();
+    const texto = inputTexto.value.trim();
+    const errores = [];
+
+    if (nombre.length < 3 || nombre.length > 80) {
+      errores.push("El nombre debe tener entre 3 y 80 caracteres.");
+    }
+
+    if (texto.length < 5 || texto.length > 300) {
+      errores.push("El comentario debe tener entre 5 y 300 caracteres.");
+    }
+
+    if (errores.length > 0) {
+      errorDiv.innerHTML = errores.map((e) => `<p>${e}</p>`).join("");
+      return;
+    }
+
+    fetch(`/api/comentarios/${actividadId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ nombre, texto }),
+    })
+      .then((response) => response.json().then((data) => ({ ok: response.ok, data })))
+      .then(({ ok, data }) => {
+        if (!ok) {
+          errorDiv.innerHTML = data.errores.map((e) => `<p>${e}</p>`).join("");
+        } else {
+          errorDiv.innerHTML = "";
+          inputNombre.value = "";
+          inputTexto.value = "";
+          cargarComentarios();
+        }
+      })
+      .catch((error) => {
+        errorDiv.innerHTML = `<p>Error al enviar el comentario.</p>`;
+      });
+  });
 </script>
 {% endblock %}

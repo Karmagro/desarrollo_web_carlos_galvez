@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from .extensions import db
 import enum
+from sqlalchemy.sql import func
 
 class Region(db.Model):
     __tablename__ = 'region'
@@ -29,6 +30,7 @@ class Actividad(db.Model):
     temas = db.relationship('ActividadTema', backref='actividad', lazy='joined', cascade="all, delete-orphan")
     fotos = db.relationship('Foto', backref='actividad', lazy='joined', cascade="all, delete-orphan")
     comuna = db.relationship('Comuna', lazy='joined')
+    comentarios = db.relationship('Comentario', backref='actividad', lazy='joined', cascade="all, delete-orphan")
     
 class TemaEnum(enum.Enum):
     MUSICA = 'música'
@@ -72,3 +74,10 @@ class ContactarPor(db.Model):
     identificador = db.Column(db.String(150), nullable=False)
     actividad_id = db.Column(db.Integer, db.ForeignKey('actividad.id'), primary_key=True)
 
+class Comentario(db.Model):
+    __tablename__ = 'comentario'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nombre = db.Column(db.String(80), nullable=False)
+    texto = db.Column(db.String(300), nullable=False)
+    fecha = db.Column(db.DateTime, nullable=False, server_default=func.now())
+    actividad_id = db.Column(db.Integer, db.ForeignKey('actividad.id'), nullable=False)
