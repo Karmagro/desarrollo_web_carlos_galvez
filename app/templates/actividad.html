@@ -104,93 +104,97 @@
     return div.innerHTML;
   }
 
-  const actividadId = {{actividad.id}};
+  const activityID = {{actividad.id}};
 
-  const comentariosDiv = document.getElementById("comments-container");
+  const commentsContainer = document.getElementById("comments-container");
 
-  function crearComentarioDiv(comentario) {
-    const contenedor = document.createElement("div");
-    contenedor.className = "comment-item";
+  function createCommentItem(comment) {
+    const container = document.createElement("div");
+    container.className = "comment-item";
 
-    const texto = `
-      <p><strong>${escapeHtml(comentario.nombre)}</strong> <span style="font-size:0.8em; color: #ccc;">(${comentario.fecha})</span></p>
-      <p>${escapeHtml(comentario.texto)}</p> `;
+    const content = `
+      <p><strong>${escapeHtml(comment.nombre)}</strong> <span style="font-size:0.8em; color: #ccc;">(${comment.fecha})</span></p>
+      <p>${escapeHtml(comment.texto)}</p> `;
 
-    contenedor.innerHTML = texto;
+    container.innerHTML = content;
 
-    return contenedor;
+    return container;
   }
 
-  function cargarComentarios() {
-    fetch(`/api/comentarios/${actividadId}`)
+  function loadComments() {
+    fetch(`/api/comentarios/${activityID}`)
       .then((response) => {
         if (!response.ok) throw new Error("No se pudieron cargar los comentarios.");
         return response.json();
       })
-      .then((comentarios) => {
-        comentariosDiv.innerHTML = "";
+      .then((comments) => {
+        commentsContainer.innerHTML = "";
 
-        if (comentarios.length === 0) {
-          comentariosDiv.innerHTML = "<p>Todavia no hay comentarios, agrega uno!</p>";
+        if (comments.length === 0) {
+          commentsContainer.innerHTML = "<p>Todavia no hay comentarios, agrega uno!</p>";
         } else {
-          comentarios.forEach((comentario) => {
-            const elemento = crearComentarioDiv(comentario);
-            comentariosDiv.appendChild(elemento);
+            comments.forEach((comment) => {
+              const commentItem = createCommentItem(comment);
+              commentsContainer.appendChild(commentItem);
           });
         }
       })
       .catch((error) => {
-        comentariosDiv.innerHTML = `<p style="color: red;">${error.message}</p>`;
+        commentsContainer.innerHTML = `<p style="color: red;">${error.message}</p>`;
       });
   }
 
-  cargarComentarios();
+  loadComments();
 
 
-  const btnAgregar = document.getElementById("comentario-enviar");
-  const inputNombre = document.getElementById("comentario-nombre");
-  const inputTexto = document.getElementById("comentario-texto");
-  const errorDiv = document.getElementById("comentario-errores");
+  const commentBtn = document.getElementById("comentario-enviar");
+  const commentName = document.getElementById("comentario-nombre");
+  const commentText = document.getElementById("comentario-texto");
+  const commentErrors = document.getElementById("comentario-errores");
 
-  btnAgregar.addEventListener("click", function () {
-    const nombre = inputNombre.value.trim();
-    const texto = inputTexto.value.trim();
-    const errores = [];
+  commentBtn.addEventListener("click", function () {
+    const name = commentName.value.trim();
+    const text = commentText.value.trim();
+    const errors = [];
 
-    if (nombre.length < 3 || nombre.length > 80) {
-      errores.push("El nombre debe tener entre 3 y 80 caracteres.");
+    if (name.length < 3 || name.length > 80) {
+      errors.push("El nombre debe tener entre 3 y 80 caracteres.");
     }
 
-    if (texto.length < 5 || texto.length > 300) {
-      errores.push("El comentario debe tener entre 5 y 300 caracteres.");
+    if (text.length < 5 || text.length > 300) {
+      errors.push("El comentario debe tener entre 5 y 300 caracteres.");
     }
 
-    if (errores.length > 0) {
-      errorDiv.innerHTML = errores.map((e) => `<p>${e}</p>`).join("");
+    if (errors.length > 0) {
+      commentErrors.innerHTML = errors.map((error) => `<p>${error}</p>`).join("");
       return;
     }
 
-    fetch(`/api/comentarios/${actividadId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ nombre, texto }),
-    })
-      .then((response) => response.json().then((data) => ({ ok: response.ok, data })))
-      .then(({ ok, data }) => {
-        if (!ok) {
-          errorDiv.innerHTML = data.errores.map((e) => `<p>${e}</p>`).join("");
+    (async () => {
+      try {
+        const response = await fetch(`/api/comentarios/${activityID}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ nombre: name, texto: text }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          commentErrors.innerHTML = data.errores ? data.errores.map((e) => `<p>${e}</p>`).join("") : "<p>Hubo un error al comentar.</p>";
         } else {
-          errorDiv.innerHTML = "";
-          inputNombre.value = "";
-          inputTexto.value = "";
-          cargarComentarios();
+          commentErrors.innerHTML = "";
+          commentName.value = "";
+          commentText.value = "";
+          loadComments();
         }
-      })
-      .catch((error) => {
-        errorDiv.innerHTML = `<p>Error al enviar el comentario.</p>`;
-      });
+      } catch (error) {
+        console.error("Error al enviar el comentario:", error);
+        commentErrors.innerHTML = `<p>Error al enviar el comentario.</p>`;
+      }
+    })();
   });
 </script>
 {% endblock %}

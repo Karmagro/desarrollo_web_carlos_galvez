@@ -395,65 +395,65 @@ def procesar_agregar():
     flash("Formulario procesado y validado exitosamente.", "success")
     return redirect(url_for("main.home"))
 
-@main.route("/api/comentarios/<int:actividad_id>")
-def obtener_comentarios(actividad_id):
-    comentarios = Comentario.query.filter_by(actividad_id=actividad_id).order_by(Comentario.fecha.desc()).all()
+@main.route("/api/comentarios/<int:activity_id>")
+def obtener_comentarios(activity_id):
+    raw_comments = Comentario.query.filter_by(actividad_id=activity_id).order_by(Comentario.fecha.desc()).all()
 
-    resultado = [
+    data = [
         {
-            "nombre": c.nombre,
-            "texto": c.texto,
-            "fecha": c.fecha.strftime("%Y-%m-%d %H:%M")
+            "nombre": comment.nombre,
+            "texto": comment.texto,
+            "fecha": comment.fecha.strftime("%Y-%m-%d %H:%M")
         }
-        for c in comentarios
+        for comment in raw_comments
     ]
 
-    return jsonify(resultado)
+    return jsonify(data)
 
-def verify_comment_name(nombre):
-    if not nombre or not (3 <= len(nombre) <= 80):
+def verify_comment_name(name):
+    if not name or not (3 <= len(name) <= 80):
         return False, "El nombre debe tener entre 3 y 80 caracteres."
     return True, None
 
-def verify_comment_text(texto):
-    if not texto or len(texto) < 5:
+def verify_comment_text(text):
+    if not text or len(text) < 5:
         return False, "El comentario debe tener al menos 5 caracteres."
     return True, None
 
-def verify_activity_exists(actividad_id):
-    actividad = Actividad.query.get(actividad_id)
+def verify_activity_exists(activity_id):
+    actividad = Actividad.query.get(activity_id)
     if not actividad:
         return False, "La actividad no existe."
     return True, None
 
-@main.route("/api/comentarios/<int:actividad_id>", methods=["POST"])
-def agregar_comentario(actividad_id):
+@main.route("/api/comentarios/<int:activity_id>", methods=["POST"])
+def agregar_comentario(activity_id):
     data = request.get_json()
 
-    nombre = data.get("nombre", "").strip()
-    texto = data.get("texto", "").strip()
+    name = data.get("nombre", "").strip()
+    text = data.get("texto", "").strip()
 
-    errores = []
+    errors = []
 
-    is_name_valid, name_error = verify_comment_name(nombre)
+    is_name_valid, name_error = verify_comment_name(name)
     if not is_name_valid:
-        errores.append(name_error)
+        errors.append(name_error)
 
-    is_text_valid, text_error = verify_comment_text(texto)
+    is_text_valid, text_error = verify_comment_text(text)
     if not is_text_valid:
-        errores.append(text_error)
+        errors.append(text_error)
 
-    is_actividad_valid, actividad_error = verify_activity_exists(actividad_id)
+    is_actividad_valid, actividad_error = verify_activity_exists(activity_id)
     if not is_actividad_valid:
-        errores.append(actividad_error)
+        errors.append(actividad_error)
 
-    if errores:
-        return jsonify({"ok": False, "errores": errores}), 400
+    if errors:
+        return jsonify({"ok": False, "errores": errors}), 400
 
     nuevo_comentario = Comentario(
-        nombre=nombre,
-        texto=texto,
-        actividad_id=actividad_id
+        nombre=name,
+        texto=text,
+        actividad_id=activity_id
     )
 
     db.session.add(nuevo_comentario)
