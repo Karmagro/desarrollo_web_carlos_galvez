@@ -12,16 +12,34 @@ content %}
     <div class="chart-container">
       <section class="chart-section">
         <h2>Cantidad de Actividades por Día</h2>
+        <p
+          id="loading-line-chart"
+          style="text-align: center; margin-bottom: 1rem; padding-top: 1rem"
+        >
+          Cargando grafico de actividades por día...
+        </p>
         <canvas id="lineChart"></canvas>
       </section>
 
       <section class="chart-section">
         <h2>Total de actividades por tipo</h2>
+        <p
+          id="loading-pie-chart"
+          style="text-align: center; margin-bottom: 1rem; padding-top: 1rem"
+        >
+          Cargando grafico de actividades por tipo...
+        </p>
         <canvas id="pieChart"></canvas>
       </section>
 
       <section class="chart-section">
         <h2>Actividades por Horario y Mes</h2>
+        <p
+          id="loading-bar-chart"
+          style="text-align: center; margin-bottom: 1rem; padding-top: 1rem"
+        >
+          Cargando grafico de actividades por horario y mes...
+        </p>
         <canvas id="barChart"></canvas>
       </section>
     </div>
@@ -39,75 +57,124 @@ content %}
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  new Chart(document.getElementById("lineChart"), {
-    type: "line",
-    data: {
-      labels: ["2025-04-01", "2025-04-02", "2025-04-03", "2025-04-04"],
-      datasets: [
-        {
-          label: "Actividades",
-          data: [3, 5, 2, 4],
-          borderColor: "black",
-          backgroundColor: "gray",
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: {
-          beginAtZero: true,
-        },
-      },
-    },
-  });
+  const loadingLineChart = document.getElementById("loading-line-chart");
+  fetch("/api/estadisticas/actividades-por-dia")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Hubo un error al cargar los datos: ");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      loadingLineChart.style.display = "none";
 
-  new Chart(document.getElementById("pieChart"), {
-    type: "pie",
-    data: {
-      labels: ["Música", "Deporte", "Ciencias", "Comida", "Otro"],
-      datasets: [
-        {
-          data: [5, 3, 2, 4, 1],
-          backgroundColor: ["#000", "#555", "#999", "#ccc", "#eee"],
+      new Chart(document.getElementById("lineChart"), {
+        type: "line",
+        data: {
+          labels: data.fecha,
+          datasets: [
+            {
+              label: "Actividades",
+              data: data.cantidad,
+              borderColor: "black",
+              backgroundColor: "gray",
+            },
+          ],
         },
-      ],
-    },
-    options: {
-      responsive: true,
-    },
-  });
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+    })
+    .catch((error) => {
+      console.error("Error al cargar los datos para lineChart:", error);
+      loadingLineChart.textContent = "Error al cargar el grafico.";
+      loadingLineChart.style.color = "red";
+    });
 
-  new Chart(document.getElementById("barChart"), {
-    type: "bar",
-    data: {
-      labels: ["Abril", "Mayo", "Junio"],
-      datasets: [
-        {
-          label: "Mañana",
-          data: [3, 2, 4],
-          backgroundColor: "#000",
+  const loadingPieChart = document.getElementById("loading-pie-chart");
+  fetch("/api/estadisticas/actividades-por-tipo")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Hubo un error al cargar los datos: ");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      loadingPieChart.style.display = "none";
+
+      new Chart(document.getElementById("pieChart"), {
+        type: "pie",
+        data: {
+          labels: data.tema,
+          datasets: [
+            {
+              data: data.cantidad,
+              backgroundColor: ["#000", "#555", "#999", "#ccc", "#eee"],
+            },
+          ],
         },
-        {
-          label: "Mediodía",
-          data: [2, 3, 3],
-          backgroundColor: "#999",
+        options: {
+          responsive: true,
         },
-        {
-          label: "Tarde",
-          data: [1, 4, 2],
-          backgroundColor: "#ccc",
+      });
+    })
+    .catch((error) => {
+      console.error("Error al cargar los datos para pieChart:", error);
+      loadingPieChart.textContent = "Error al cargar el grafico.";
+      loadingPieChart.style.color = "red";
+    });
+
+  const loadingBarChart = document.getElementById("loading-bar-chart");
+  fetch("/api/estadisticas/actividades-por-mes-y-horario")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Hubo un error al cargar los datos: ");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      new Chart(document.getElementById("barChart"), {
+        type: "bar",
+        data: {
+          labels: data.meses,
+          datasets: [
+            {
+              label: "Mañana",
+              data: data.madrugada,
+              backgroundColor: "#000",
+            },
+            {
+              label: "Tarde",
+              data: data.tarde,
+              backgroundColor: "#999",
+            },
+            {
+              label: "Noche",
+              data: data.noche,
+              backgroundColor: "#ccc",
+            },
+          ],
         },
-      ],
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: {
-          beginAtZero: true,
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
         },
-      },
-    },
-  });
+      });
+    })
+    .catch((error) => {
+      console.error("Error al cargar los datos para barChart:", error);
+      loadingBarChart.textContent = "Error al cargar el grafico.";
+      loadingBarChart.style.color = "red";
+    });
 </script>
 {% endblock %}

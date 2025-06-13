@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from .extensions import db
 from datetime import datetime
 from werkzeug.utils import secure_filename
+from sqlalchemy import func
 from app.models import Region, Comuna, Actividad, ActividadTema, Foto, Comentario, TemaEnum, ContactosEnum, ContactarPor
 import json, re, uuid, os
 
@@ -460,3 +461,78 @@ def agregar_comentario(activity_id):
     db.session.commit()
 
     return jsonify({"ok": True, "mensaje": "Comentario agregado correctamente."})
+
+
+
+
+@main.route("/api/estadisticas/actividades-por-dia")
+def actividades_por_dia():
+    resultados = (
+        db.session.query(
+            func.date(Actividad.dia_hora_inicio).label("fecha"),
+            func.count(Actividad.id).label("cantidad")
+        )
+        .group_by(func.date(Actividad.dia_hora_inicio))
+        .order_by(func.date(Actividad.dia_hora_inicio))
+        .all()
+    )
+
+    data = {
+        "fecha": [r.fecha.strftime("%Y-%m-%d") for r in resultados],
+        "cantidad": [r.cantidad for r in resultados]
+    }
+
+    return jsonify(data)
+
+@main.route("/api/estadisticas/actividades-por-tipo")
+def actividades_por_tipo():
+    resultados = (
+        db.session.query(
+            ActividadTema.tema,
+            func.count(ActividadTema.id).label("cantidad")
+        )
+        .group_by(ActividadTema.tema)
+        .order_by(ActividadTema.tema)
+        .all()
+    )
+
+    data = {
+        "tema": [r.tema.value.capitalize() for r in resultados],
+        "cantidad": [r.cantidad for r in resultados]
+    }
+
+    return jsonify(data)
+
+
+@main.route("/api/estadisticas/actividades-por-mes-y-horario")
+def actividades_por_mes_y_horario():
+    actividades = db.session.query(Actividad.dia_hora_inicio).all()
+
+    datos = {}
+
+    for actividad in actividades:
+        fecha = actividad.dia_hora_inicio
+        mes = fecha.strftime("%Y-%m")
+        hora = fecha.hour
+
+        if mes not in datos:
+            datos[mes] = {"madrugada": 0, "tarde": 0, "noche": 0}
+
+        if 6 <= hora < 12:
+            datos[mes]["madrugada"] += 1
+        elif 12 <= hora < 20:
+            datos[mes]["tarde"] += 1
+        else:
+            datos[mes]["noche"] += 1
+
+    meses = sorted(datos.keys())
+
+    data = {
+        "meses": meses,
+        "madrugada": [datos[mes]["madrugada"] for mes in meses],
+        "tarde": [datos[mes]["tarde"] for mes in meses],
+        "noche": [datos[mes]["noche"] for mes in meses],
+    }
+
+    return jsonify(data)
+

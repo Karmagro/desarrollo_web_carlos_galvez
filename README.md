@@ -1,47 +1,40 @@
-# Tarea 2 – CC5002 – Desarrollo de Aplicaciones Web
+# Tarea 3 – CC5002 – Desarrollo de Aplicaciones Web
 
-Este repositorio contiene la implementación de la Tarea 2 del curso CC5002 (Desarrollo de Aplicaciones Web), desarrollada con **Flask + MySQL**. El objetivo fue extender el prototipo de la Tarea 1 e implementar una aplicación funcional con formularios validados, almacenamiento en base de datos y navegación completa. Todavia falta la implementacion de las estadisticas.
+Este repositorio contiene la extension de la Tarea 2 del curso CC5002, en donde se incorpora:
+
+- Estadísticas dinamicas obtenidas desde la base de datos.
+- Comentarios en cada actividad, con formulario para ingresar uno nuevo.
+
+Ambas funcionalidades se integran en la aplicación ya desarrollada con Flask y MySQL.
+
+---
 
 ## Decisiones de implementación
 
-### Estructura del proyecto
+### Estadísticas
 
-- El proyecto usa la estructura recomendada para aplicaciones Flask modulares.
-- Se separaro en carpetas: `app/` contiene templates, modelos y rutas, mientras que `run.py` y `config.py` están en la raíz.
-- Se creó un `Blueprint` principal (`main`) para registrar todas las rutas.
-- Se utilizó un único archivo CSS (`styles.css`) para mantener el diseño centralizado y limpio.
+- Se implementaron tres rutas en Flask que llaman a la base de datos:
+  - `/api/estadisticas/actividades-por-dia`
+  - `/api/estadisticas/actividades-por-tipo`
+  - `/api/estadisticas/actividades-por-mes-y-horario`
+- Los datos se procesan en el servidor con SQLAlchemy.
+- En el cliente, se utiliza `fetch()` para cargar los datos via AJAX y generar graficos con `Chart.js`.
+- Se incluyeron mensajes de “cargando” y manejo de errores visibles en cada grafico.
 
-### Reutilización de componentes
+### Comentarios
 
-- Se implementó un sistema de plantillas con `layout.html` y `_header.html`, permitiendo reutilizar elementos comunes en todas las páginas como el menú de navegación.
-- Se evitó la duplicación de código HTML en los templates.
+- Se agrego soporte completo para comentar actividades.
+  - Formulario de comentario con validación en JS y Python.
+  - Envio async usando `fetch()` (`POST` a `/api/comentarios/<id>`).
+  - Listado de comentarios cargado dinamicamente desde la ruta `GET /api/comentarios/<id>`.
+- Protección contra XSS usando `escapeHtml()` en el frontend.
+- En el backend se usan funciones auxiliares como `verify_comment_name` y `verify_comment_text` para verificar que los datos cumplan los requisitos.
 
-### Validaciones (HTML, JS + Backend)
+### Otros detalles
 
-- Todas las validaciones del formulario están implementadas con funciones individuales en JS, dentro del mismo archivo HTML (`agregar.html`), separando responsabilidades para cada campo (correo, teléfono, redes sociales, fechas, temas, fotos, etc.).
-- Las validaciones del lado servidor están implementadas como funciones auxiliares (`verify_*`) en `routes.py`, asegurando consistencia y claridad.
-
-### Base de datos
-
-- Los modelos están definidos en `models.py`.
-- Para evitar dependencias circulares, la instancia de SQLAlchemy se declaró en `extensions.py`.
-- Se usaron `Enum` para los campos de contacto (`ContactosEnum`) y tema (`TemaEnum`), asegurando consistencia entre los datos del frontend y la base de datos.
-- Se implementaron relaciones entre las tablas (`Actividad`, `ActividadTema`, `Foto`, `ContactarPor`) con `relationship()` y `lazy='joined'` para mejorar la eficiencia con joins.
-
-### Manejo de fotos
-
-- Los archivos se renombran con un `UUID` único más el nombre original usando `secure_filename` para evitar colisiones.
-- Las imágenes se almacenan en `static/uploads`.
-
-### Interfaz dinámica
-
-- La carga de comunas según la región se realiza en el navegador usando un objeto JSON (`comunas_json`) generado desde Flask y embebido en el HTML.
-- No se crearon archivos `.js` separados, todo el JavaScript está dentro de los templates para mantener el prototipo autocontenido y claro.
-
-### Uso de XAMPP y configuración de MySQL
-
-- Para el desarrollo de este proyecto se utilizó XAMPP como entorno local para levantar el servicio de MySQL, sin necesidad de un servidor Apache. La base de datos se configuró accediendo a phpMyAdmin desde `http://localhost/phpmyadmin`.
-- El usuario fue creado manualmente a través de phpMyAdmin, usando la interfaz de gestión de usuarios.
+- Se mantuvo la estructura modular con `routes.py`, `models.py`, `templates/`, etc...
+- Todas las nuevas rutas de API siguen una convención clara (`/api/...`).
+- Se reutilizaron estilos, layout y navegacion existentes para integrar las nuevas secciones.
 
 ---
 
